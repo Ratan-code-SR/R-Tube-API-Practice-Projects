@@ -30,15 +30,39 @@ const loadData = async () => {
     // })
 
 }
+const sortedButton = document.getElementById("sortedButton");
+let selectedCategory = 1000;
+let selectedByView = false;
+sortedButton.addEventListener("click", () => {
+    selectedByView = true;
+    buttonClick(selectedCategory,selectedByView)
+})
 
 
-
-const buttonClick = async (id) => {
+const buttonClick = async (id, selectedByView) => {
     // console.log(id);
     const res = await fetch(`https://openapi.programming-hero.com/api/videos/category/${id}`);
     const data = await res.json();
     // console.log(data.data);
     const allCardData = data.data;
+
+
+    if (selectedByView) {
+        allCardData.sort((a, b) => {
+            const totalViewFirst = a.others?.views;
+            const totalViewSecond = b.others?.views;
+            const totalViewFirstNumber = parseFloat(totalViewFirst.replace("k", "" || 0));
+            const totalViewSecondNumber = parseFloat(totalViewSecond.replace("k", "" || 0))
+
+            // console.log(totalViewFirst,totalViewSecond);
+            return (totalViewSecondNumber - totalViewFirstNumber)
+        })
+    }
+
+
+
+
+
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerText = " ";
     const emptyData = document.getElementById("empty-data")
@@ -84,7 +108,7 @@ const buttonClick = async (id) => {
 }
 
 
-buttonClick('1000')
+buttonClick(selectedCategory, selectedByView)
 
 
 loadData()
